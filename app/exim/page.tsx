@@ -1,21 +1,30 @@
 "use client";
 import { PageHeader, Panel, Stat, Badge } from "@/components/ui";
+import { FlowTrack, type FlowNode } from "@/components/FlowTrack";
 import { Boxes, ShieldCheck, FileSearch, Calculator, Ship, Train, Factory, Check } from "lucide-react";
 
 interface ProductCard {
   name: string;
   tagline: string;
-  headerColor: string;
+  headerHex: string;
   icon: React.ReactNode;
   metrics: { label: string; value: string }[];
   bullets: string[];
 }
 
+const SUPPLY_CHAIN: FlowNode[] = [
+  { icon: <Ship size={20} />, label: "Vessel at Port", sublabel: "Haldia / Paradip / Vizag" },
+  { icon: <FileSearch size={20} />, label: "EXIM Documents", sublabel: "15–40 docs / vessel", badge: "LIQUIDMIND", badgeTone: "teal" },
+  { icon: <ShieldCheck size={20} />, label: "Customs Clearance", sublabel: "HS code · duty · FTA" },
+  { icon: <Train size={20} />, label: "IR Rail Haul", sublabel: "2–5 days" },
+  { icon: <Factory size={20} />, label: "DSP Wagon Tracking", sublabel: "Interchange → blast furnace", badge: "THIS SYSTEM", badgeTone: "brand" },
+];
+
 const PRODUCTS: ProductCard[] = [
   {
     name: "TradeGuard AI",
     tagline: "Shipping Bill & Invoice cross-validation",
-    headerColor: "bg-slate-800",
+    headerHex: "#1e293b",
     icon: <ShieldCheck size={18} />,
     metrics: [
       { label: "Fields validated", value: "40+" },
@@ -32,7 +41,7 @@ const PRODUCTS: ProductCard[] = [
   {
     name: "Patram AI",
     tagline: "Trade Document Intelligence & Q&A",
-    headerColor: "bg-teal-900",
+    headerHex: "#134e4a",
     icon: <FileSearch size={18} />,
     metrics: [
       { label: "Trade frameworks", value: "190+" },
@@ -49,7 +58,7 @@ const PRODUCTS: ProductCard[] = [
   {
     name: "TariffIQ (HSN+ AI)",
     tagline: "HS classification & duty calculator",
-    headerColor: "bg-orange-900",
+    headerHex: "#7c2d12",
     icon: <Calculator size={18} />,
     metrics: [
       { label: "HSN codes", value: "21,000+" },
@@ -87,81 +96,7 @@ export default function EXIMIntelligence() {
         className="overflow-hidden"
         bodyClass="p-4"
       >
-        <div className="flex items-center justify-between gap-2 overflow-x-auto pb-2">
-          {/* Vessel at port */}
-          <div className="flex flex-col items-center gap-2 min-w-fit">
-            <div className="flex items-center justify-center w-14 h-14 rounded-lg bg-slate-700">
-              <Ship size={24} className="text-sky-300" />
-            </div>
-            <div className="text-[11px] text-center text-muted max-w-[80px]">
-              Vessel at Port
-            </div>
-          </div>
-
-          {/* Arrow */}
-          <div className="text-muted text-xl">→</div>
-
-          {/* EXIM Documents */}
-          <div className="flex flex-col items-center gap-2 min-w-fit">
-            <div className="flex items-center justify-center w-14 h-14 rounded-lg bg-orange-900">
-              <FileSearch size={24} className="text-orange-200" />
-            </div>
-            <div className="text-[11px] text-center text-muted max-w-[90px]">
-              EXIM Docs
-              <br />
-              15–40 docs
-            </div>
-            <div className="text-[9px] text-accent-teal font-semibold">
-              LIQUIDMIND
-            </div>
-          </div>
-
-          {/* Arrow */}
-          <div className="text-muted text-xl">→</div>
-
-          {/* Customs clearance */}
-          <div className="flex flex-col items-center gap-2 min-w-fit">
-            <div className="flex items-center justify-center w-14 h-14 rounded-lg bg-slate-700">
-              <ShieldCheck size={24} className="text-amber-300" />
-            </div>
-            <div className="text-[11px] text-center text-muted max-w-[70px]">
-              Customs
-              <br />
-              Clearance
-            </div>
-          </div>
-
-          {/* Arrow */}
-          <div className="text-muted text-xl">→</div>
-
-          {/* Rail haul */}
-          <div className="flex flex-col items-center gap-2 min-w-fit">
-            <div className="flex items-center justify-center w-14 h-14 rounded-lg bg-slate-700">
-              <Train size={24} className="text-sky-300" />
-            </div>
-            <div className="text-[11px] text-center text-muted max-w-[70px]">
-              IR Rail Haul
-              <br />
-              2–5 days
-            </div>
-          </div>
-
-          {/* Arrow */}
-          <div className="text-muted text-xl">→</div>
-
-          {/* DSP Interchange */}
-          <div className="flex flex-col items-center gap-2 min-w-fit">
-            <div className="flex items-center justify-center w-14 h-14 rounded-lg bg-slate-700 ring-2 ring-brand">
-              <Factory size={24} className="text-orange-300" />
-            </div>
-            <div className="text-[11px] text-center text-muted max-w-[80px]">
-              DSP Wagon
-              <br />
-              Tracking
-            </div>
-            <div className="text-[9px] text-brand font-semibold">THIS SYSTEM</div>
-          </div>
-        </div>
+        <FlowTrack nodes={SUPPLY_CHAIN} scopeFrom={4} />
 
         <div className="mt-4 pt-3 border-t border-panel-line text-[11px] text-muted">
           <span className="text-brand font-semibold">Key insight:</span> EXIM
@@ -176,7 +111,7 @@ export default function EXIMIntelligence() {
         {PRODUCTS.map((product) => (
           <div key={product.name} className="card rounded-lg overflow-hidden">
             {/* Header */}
-            <div className={`${product.headerColor} px-4 py-3`}>
+            <div className="px-4 py-3" style={{ backgroundColor: product.headerHex }}>
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-white">{product.icon}</span>
                 <div>

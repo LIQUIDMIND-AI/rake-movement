@@ -179,23 +179,22 @@ export default function LifecycleTracker() {
               {/* Vertical Timeline */}
               <Panel title="Event Timeline" sub="Timestamped milestones via sensor fusion">
                 <div className="space-y-4 relative">
-                  {/* Vertical line */}
-                  <div className="absolute left-5 top-0 bottom-0 w-0.5 bg-gradient-to-b from-brand/50 to-line" />
+                  {/* Vertical line — sits behind the (opaque) node circles so it never crosses them */}
+                  <div className="absolute left-5 top-5 bottom-5 w-0.5 bg-line z-0" />
 
                   {selectedRake.lifecycle.map((event, idx) => {
                     const isActive = event.stage === selectedRake.stage;
                     const isDone = event.done;
                     const isPending = !isDone && !isActive;
 
-                    const bgColor = isDone ? "bg-accent-grn/20" : isActive ? "bg-brand/20" : "bg-line";
                     const borderColor = isDone ? "border-accent-grn" : isActive ? "border-brand" : "border-line";
                     const dotColor = isDone ? "bg-accent-grn" : isActive ? "bg-brand" : "bg-t3";
 
                     return (
                       <div key={idx} className="relative pl-14 flex gap-3">
-                        {/* Dot indicator */}
-                        <div className={`absolute left-0 w-10 h-10 rounded-full border-2 ${borderColor} ${bgColor} flex items-center justify-center`}>
-                          <div className={`w-2 h-2 rounded-full ${dotColor}`} />
+                        {/* Dot indicator — opaque surface fill fully occludes the line behind it */}
+                        <div className={`absolute left-0 z-10 w-10 h-10 rounded-full border-2 ${borderColor} bg-surface flex items-center justify-center`}>
+                          <div className={`w-2.5 h-2.5 rounded-full ${dotColor}`} />
                         </div>
 
                         {/* Event content */}

@@ -4,10 +4,21 @@ import { useStore } from "@/lib/store";
 import { Panel, Stat, Badge, PageHeader } from "@/components/ui";
 import { InboundMapCanvas } from "@/components/Maps";
 import { Integrations } from "@/components/Integrations";
+import { FlowTrack, type FlowNode } from "@/components/FlowTrack";
 import { fmtDateTime } from "@/lib/format";
 import { COMMODITY_META, COMMODITY_MAP_COLOR } from "@/lib/commodities";
 import type { Commodity } from "@/lib/types";
 import { Ship, Anchor, Droplets, Flame, Zap, Train } from "lucide-react";
+
+const PORT_TO_FURNACE: FlowNode[] = [
+  { icon: <Ship size={20} />, label: "Vessel · Sea Leg", sublabel: "AIS · Sagar Setu" },
+  { icon: <Anchor size={20} />, label: "Haldia / Paradip / Vizag", sublabel: "Discharge · PCS1x" },
+  { icon: <Train size={20} />, label: "IR Rail", sublabel: "FOIS · Howrah–Delhi" },
+  { icon: <Droplets size={20} />, label: "Interchange", sublabel: "DSP gate yard", badge: "DSP TRACKING BEGINS", badgeTone: "brand" },
+  { icon: <Droplets size={20} />, label: "Tipplers", sublabel: "T-1 / T-2 unload" },
+  { icon: <Flame size={20} />, label: "Coke Oven", sublabel: "Carbonization" },
+  { icon: <Zap size={20} />, label: "Blast Furnace", sublabel: "Iron production" },
+];
 
 export default function InboundPage() {
   const { inbound, vessels } = useStore();
@@ -178,103 +189,7 @@ export default function InboundPage() {
 
       {/* Port to Plant Flow Stepper */}
       <Panel title="Load port → blast furnace flow" sub="One continuous chain: sea leg + rail leg + in-plant movement">
-        <div className="overflow-x-auto py-2">
-          <div className="flex items-center gap-1.5 min-w-max px-4">
-            {/* Vessel / sea leg */}
-            <div className="flex flex-col items-center gap-1.5">
-              <div className="flex items-center justify-center h-12 w-12 rounded-lg bg-panel border border-accent/30">
-                <Ship size={20} className="text-accent" />
-              </div>
-              <div className="text-[10.5px] text-center max-w-[80px]">
-                <span className="text-t1 font-medium block">Vessel · Sea leg</span>
-                <span className="text-muted text-[9px]">AIS · Sagar Setu</span>
-              </div>
-            </div>
-
-            <div className="flex-shrink-0 text-muted">→</div>
-
-            {/* Port */}
-            <div className="flex flex-col items-center gap-1.5">
-              <div className="flex items-center justify-center h-12 w-12 rounded-lg bg-panel border border-panel-line">
-                <Anchor size={20} className="text-accent" />
-              </div>
-              <div className="text-[10.5px] text-center max-w-[80px]">
-                <span className="text-t1 font-medium block">Haldia/Paradip/Vizag</span>
-                <span className="text-muted text-[9px]">Discharge · PCS1x</span>
-              </div>
-            </div>
-
-            {/* Arrow 1 */}
-            <div className="flex-shrink-0 text-muted">→</div>
-
-            {/* IR Rail Haul */}
-            <div className="flex flex-col items-center gap-1.5">
-              <div className="flex items-center justify-center h-12 w-12 rounded-lg bg-panel border border-panel-line">
-                <Train size={20} className="text-accent-teal" />
-              </div>
-              <div className="text-[10.5px] text-center max-w-[80px]">
-                <span className="text-t1 font-medium block">IR Rail</span>
-                <span className="text-muted text-[9px]">FOIS · Howrah–Delhi</span>
-              </div>
-            </div>
-
-            {/* Arrow 2 */}
-            <div className="flex-shrink-0 text-muted">→</div>
-
-            {/* DSP Interchange */}
-            <div className="flex flex-col items-center gap-1.5">
-              <div className="flex items-center justify-center h-12 w-12 rounded-lg bg-panel border border-panel-line">
-                <Droplets size={20} className="text-accent-amber" />
-              </div>
-              <div className="text-[10.5px] text-center max-w-[80px]">
-                <span className="text-t1 font-medium block">Interchange</span>
-                <span className="text-muted text-[9px]">DSP Gate Yard</span>
-              </div>
-            </div>
-
-            {/* Arrow 3 */}
-            <div className="flex-shrink-0 text-muted">→</div>
-
-            {/* Wagon Tippler */}
-            <div className="flex flex-col items-center gap-1.5">
-              <div className="flex items-center justify-center h-12 w-12 rounded-lg bg-panel border border-panel-line">
-                <Droplets size={20} className="text-accent-grn" />
-              </div>
-              <div className="text-[10.5px] text-center max-w-[80px]">
-                <span className="text-t1 font-medium block">Tipplers</span>
-                <span className="text-muted text-[9px]">T-1 / T-2 Unload</span>
-              </div>
-            </div>
-
-            {/* Arrow 4 */}
-            <div className="flex-shrink-0 text-muted">→</div>
-
-            {/* Coke Ovens */}
-            <div className="flex flex-col items-center gap-1.5">
-              <div className="flex items-center justify-center h-12 w-12 rounded-lg bg-panel border border-panel-line">
-                <Flame size={20} className="text-accent-red" />
-              </div>
-              <div className="text-[10.5px] text-center max-w-[80px]">
-                <span className="text-t1 font-medium block">Coke Oven</span>
-                <span className="text-muted text-[9px]">Carbonization</span>
-              </div>
-            </div>
-
-            {/* Arrow 5 */}
-            <div className="flex-shrink-0 text-muted">→</div>
-
-            {/* Blast Furnace */}
-            <div className="flex flex-col items-center gap-1.5">
-              <div className="flex items-center justify-center h-12 w-12 rounded-lg bg-panel border border-panel-line">
-                <Zap size={20} className="text-accent-violet" />
-              </div>
-              <div className="text-[10.5px] text-center max-w-[80px]">
-                <span className="text-t1 font-medium block">Blast Furnace</span>
-                <span className="text-muted text-[9px]">Iron Production</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        <FlowTrack nodes={PORT_TO_FURNACE} scopeFrom={3} />
       </Panel>
 
       {/* Integrations */}

@@ -36,9 +36,10 @@ const PORT_POS: Record<string, [number, number]> = {
 export function InboundMap({ height = "100%" }: { height?: string }) {
   const { inbound, vessels } = useStore();
   return (
-    <MapContainer center={[20.2, 86.5]} zoom={6} minZoom={4} maxZoom={9}
-      style={{ height, width: "100%", borderRadius: 12 }}>
-      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="© OpenStreetMap contributors" />
+    <div className="relative h-full w-full">
+      <MapContainer center={[20.2, 86.5]} zoom={6} minZoom={4} maxZoom={9}
+        style={{ height, width: "100%", borderRadius: 12 }}>
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="© OpenStreetMap contributors" />
 
       {/* Sea leg: vessel → discharge port */}
       {vessels.map((v) => (
@@ -102,6 +103,25 @@ export function InboundMap({ height = "100%" }: { height?: string }) {
           </Popup>
         </Marker>
       ))}
-    </MapContainer>
+      </MapContainer>
+
+      <div className="pointer-events-none absolute bottom-3 left-3 z-[1000] rounded-lg border border-panel-line bg-surface/90 backdrop-blur px-3 py-2 shadow-pop">
+        <div className="mb-1.5 text-[10.5px] font-semibold text-t1">Map key</div>
+        <div className="space-y-1 text-[10.5px] text-t2">
+          <div className="flex items-center gap-2">
+            <span className="inline-block h-0.5 w-5 border-t-2 border-dashed" style={{ borderColor: "#38bdf8" }} />
+            Vessel sea route (AIS)
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="inline-block h-0.5 w-5 border-t-2 border-dashed" style={{ borderColor: "#f97316" }} />
+            Rake rail route (by commodity)
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="inline-block h-2 w-2 rounded-full" style={{ background: "#f97316" }} />
+            DSP Durgapur · <span className="inline-block h-2 w-2 rounded-full ml-1" style={{ background: "#38bdf8" }} /> Port
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

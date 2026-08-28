@@ -32,11 +32,12 @@ export function PlantMap({ height = "100%", showNodes = true }: { height?: strin
   const plantRakes = rakes.filter((r) => r.stage !== "en-route");
 
   return (
-    <MapContainer center={PLANT_CENTER} zoom={15} minZoom={13} maxZoom={17}
-      style={{ height, width: "100%", borderRadius: 12 }} zoomControl={true} attributionControl={true}>
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='© OpenStreetMap contributors' />
+    <div className="relative h-full w-full">
+      <MapContainer center={PLANT_CENTER} zoom={15} minZoom={13} maxZoom={17}
+        style={{ height, width: "100%", borderRadius: 12 }} zoomControl={true} attributionControl={true}>
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='© OpenStreetMap contributors' />
 
       {GEOFENCES.map((g) => (
         <Polygon key={g.id} positions={g.polygon}
@@ -95,6 +96,25 @@ export function PlantMap({ height = "100%", showNodes = true }: { height?: strin
           </Marker>
         );
       })}
-    </MapContainer>
+      </MapContainer>
+
+      <div className="pointer-events-none absolute bottom-3 left-3 z-[1000] rounded-lg border border-panel-line bg-surface/90 backdrop-blur px-3 py-2 shadow-pop">
+        <div className="mb-1.5 text-[10.5px] font-semibold text-t1">Map key</div>
+        <div className="space-y-1 text-[10.5px] text-t2">
+          <div className="flex items-center gap-2">
+            <span className="inline-block h-0.5 w-5" style={{ background: "#3d5876" }} />
+            Track / rake route
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="inline-block h-0.5 w-5 border-t-2" style={{ borderColor: "#38bdf8" }} />
+            Operational geofence
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="inline-block h-0.5 w-5 border-t-2 border-dashed" style={{ borderColor: "#f87171" }} />
+            High-hazard zone
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
