@@ -77,7 +77,7 @@ export default function AlertsPage() {
             onClick={() => setSelectedTab("alerts")}
             className={`px-4 py-2 rounded-full text-sm font-medium transition ${
               selectedTab === "alerts"
-                ? "bg-brand text-slate-900"
+                ? "bg-brand text-white"
                 : "bg-panel text-t2 hover:text-t1"
             }`}
           >
@@ -87,7 +87,7 @@ export default function AlertsPage() {
             onClick={() => setSelectedTab("intrusion")}
             className={`px-4 py-2 rounded-full text-sm font-medium transition ${
               selectedTab === "intrusion"
-                ? "bg-brand text-slate-900"
+                ? "bg-brand text-white"
                 : "bg-panel text-t2 hover:text-t1"
             }`}
           >
@@ -106,7 +106,7 @@ export default function AlertsPage() {
                   onClick={() => setSeverityFilter(sev as AlertSeverity | "all")}
                   className={`px-3 py-1.5 rounded-full text-xs font-medium transition ${
                     severityFilter === sev
-                      ? "bg-brand text-slate-900"
+                      ? "bg-brand text-white"
                       : "bg-panel text-t2 hover:text-t1 border border-panel-line"
                   }`}
                 >
@@ -166,8 +166,8 @@ export default function AlertsPage() {
                       <div key={intrusion.id} className="p-4 space-y-3 hover:bg-panel/50 transition">
                         {/* Camera snapshot placeholder */}
                         <div className="relative aspect-video rounded-lg overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
-                          <Camera size={32} className="text-t3" />
-                          <div className="absolute bottom-2 right-2 bg-slate-900/80 px-2 py-1 rounded text-xs text-t2 mono">
+                          <Camera size={32} className="text-slate-300" />
+                          <div className="absolute bottom-2 right-2 bg-slate-900/80 px-2 py-1 rounded text-xs text-slate-300 mono">
                             {intrusion.cameraId}
                           </div>
                         </div>
@@ -260,7 +260,7 @@ function AlertCard({ alert, onAck }: { alert: Alert; onAck: () => void }) {
         className={`shrink-0 px-3 py-1.5 rounded text-xs font-medium transition ${
           alert.ack
             ? "bg-panel/40 text-t3 cursor-default"
-            : "bg-accent hover:bg-accent/80 text-slate-900"
+            : "bg-accent hover:bg-accent/80 text-white"
         }`}
       >
         {alert.ack ? (

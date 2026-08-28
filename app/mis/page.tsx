@@ -74,7 +74,7 @@ export default function MISReports() {
                   onClick={() => setPeriod(p)}
                   className={`px-3 py-1.5 rounded text-xs font-medium transition ${
                     period === p
-                      ? "bg-brand text-slate-900"
+                      ? "bg-brand text-white"
                       : "text-t2 hover:text-t1"
                   }`}
                 >

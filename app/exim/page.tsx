@@ -91,7 +91,7 @@ export default function EXIMIntelligence() {
           {/* Vessel at port */}
           <div className="flex flex-col items-center gap-2 min-w-fit">
             <div className="flex items-center justify-center w-14 h-14 rounded-lg bg-slate-700">
-              <Ship size={24} className="text-accent" />
+              <Ship size={24} className="text-sky-300" />
             </div>
             <div className="text-[11px] text-center text-muted max-w-[80px]">
               Vessel at Port
@@ -122,7 +122,7 @@ export default function EXIMIntelligence() {
           {/* Customs clearance */}
           <div className="flex flex-col items-center gap-2 min-w-fit">
             <div className="flex items-center justify-center w-14 h-14 rounded-lg bg-slate-700">
-              <ShieldCheck size={24} className="text-accent-amber" />
+              <ShieldCheck size={24} className="text-amber-300" />
             </div>
             <div className="text-[11px] text-center text-muted max-w-[70px]">
               Customs
@@ -137,7 +137,7 @@ export default function EXIMIntelligence() {
           {/* Rail haul */}
           <div className="flex flex-col items-center gap-2 min-w-fit">
             <div className="flex items-center justify-center w-14 h-14 rounded-lg bg-slate-700">
-              <Train size={24} className="text-accent" />
+              <Train size={24} className="text-sky-300" />
             </div>
             <div className="text-[11px] text-center text-muted max-w-[70px]">
               IR Rail Haul
@@ -152,7 +152,7 @@ export default function EXIMIntelligence() {
           {/* DSP Interchange */}
           <div className="flex flex-col items-center gap-2 min-w-fit">
             <div className="flex items-center justify-center w-14 h-14 rounded-lg bg-slate-700 ring-2 ring-brand">
-              <Factory size={24} className="text-brand" />
+              <Factory size={24} className="text-orange-300" />
             </div>
             <div className="text-[11px] text-center text-muted max-w-[80px]">
               DSP Wagon
@@ -178,12 +178,12 @@ export default function EXIMIntelligence() {
             {/* Header */}
             <div className={`${product.headerColor} px-4 py-3`}>
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-t1">{product.icon}</span>
+                <span className="text-white">{product.icon}</span>
                 <div>
-                  <div className="font-semibold text-sm text-t1">
+                  <div className="font-semibold text-sm text-white">
                     {product.name}
                   </div>
-                  <div className="text-[11px] text-muted">{product.tagline}</div>
+                  <div className="text-[11px] text-white/65">{product.tagline}</div>
                 </div>
               </div>
             </div>

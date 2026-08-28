@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "ui-ux-design-pro": {
+      "source": "saifyxpro/ui-ux-design-pro-skill",
+      "sourceType": "github",
+      "skillPath": "skills/ui-ux-design-pro/SKILL.md",
+      "computedHash": "78db7907b61510b5d708d4b595a261fc198170bb4b21416ec67e1dd779e64890"
+    }
+  }
+}
