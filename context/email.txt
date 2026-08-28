@@ -1,0 +1,37 @@
+Respected Madam / Sir,
+
+This is in continuation of our email dated 06 August 2026 regarding the proposed Live Tracking and Reporting Dashboard for Railway Wagons at SAIL, Durgapur Steel Plant (DSP), under the Pravartanam Digital Transformation Programme.
+
+Following the interest expressed by your organisation, we invite your team to conduct a 30-minute online presentation and demonstration as per the following schedule:
+
+
+Date: 31.08.2026
+Time: 03:30 PM - 04:00 PM
+
+
+The presentation should focus specifically on the following use cases:
+
+    Real-time tracking and monitoring of railway logistics within the DSP plant premises.
+    End-to-end tracking of rakes—from their arrival at the plant, placement at various tippling, unloading and loading stations, internal movement, and final handover.
+    A real-time dashboard providing visibility into rake and wagon locations, movement status, detention time, turnaround time and operational alerts.
+    Generation of regular MIS reports as well as customised reports based on operational requirements.
+    Inspection and monitoring of railway tracks, including the detection of unauthorised intrusion in high-hazard areas located near the rail tracks.
+
+Your presentation may broadly cover the proposed technology, system architecture, tracking methodology, dashboard and reporting features, integration approach, implementation methodology, and indicative deployment timeline. You are also requested to demonstrate similar use cases implemented by your organisation elsewhere, wherever available, along with the outcomes achieved.
+
+An image depicting the present railway layout at DSP is enclosed for your preliminary reference.
+
+The session may preferably be structured as follows:
+
+    20 minutes: Solution presentation and demonstration
+    10 minutes: Discussion and clarification
+
+Following the online demonstration, interested solution providers are encouraged to undertake a site visit to Durgapur Steel Plant for a detailed assessment of the existing railway network, operational processes, site conditions, integration requirements and expected project deliverables.
+
+Thereafter, your organisation may submit a detailed technical and commercial offer based on a comprehensive understanding of the project scope and deliverables.
+
+Kindly confirm your participation and share the online meeting link at the earliest to facilitate the participation of the concerned officials from SAIL DSP and SDTD. You are also requested to share the names and contact details of the representatives attending the session.
+
+We look forward to your presentation and interaction.
+
+सादर धन्यवाद / Thanks & Regards,

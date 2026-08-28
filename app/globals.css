@@ -1,0 +1,116 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------------------------------------------------------------------
+   Semantic design tokens (channel triplets → used as rgb(var(--x)/<alpha>))
+   Light is the default theme; [data-theme="dark"] overrides.
+--------------------------------------------------------------------------- */
+:root {
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --bg: 246 248 251;
+  --surface: 255 255 255;
+  --surface-2: 244 247 250;
+  --surface-3: 236 241 247;
+  --line: 226 232 240;
+  --t1: 15 27 42;
+  --t2: 71 85 105;
+  --t3: 100 116 139;
+
+  --brand: 194 65 12;
+  --sky: 3 105 161;
+  --teal: 15 118 110;
+  --grn: 21 128 61;
+  --amber: 180 83 9;
+  --red: 185 28 28;
+  --violet: 109 40 217;
+
+  --shadow: 0 1px 2px rgb(15 27 42 / 0.04), 0 4px 16px rgb(15 27 42 / 0.06);
+  --shadow-lg: 0 8px 30px rgb(15 27 42 / 0.12);
+  --map-filter: none;
+}
+
+[data-theme="dark"] {
+  --bg: 9 14 24;
+  --surface: 20 28 42;
+  --surface-2: 15 22 34;
+  --surface-3: 27 37 54;
+  --line: 37 51 74;
+  --t1: 233 239 246;
+  --t2: 166 182 200;
+  --t3: 124 141 162;
+
+  --brand: 249 115 22;
+  --sky: 56 189 248;
+  --teal: 45 212 191;
+  --grn: 52 211 153;
+  --amber: 251 191 36;
+  --red: 248 113 113;
+  --violet: 167 139 250;
+
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 12px 34px rgb(0 0 0 / 0.55);
+  --map-filter: brightness(0.62) contrast(1.05) saturate(0.75) hue-rotate(178deg) invert(1);
+}
+
+html, body {
+  background: rgb(var(--bg));
+  color: rgb(var(--t1));
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+* { box-sizing: border-box; }
+html { color-scheme: light dark; }
+
+::-webkit-scrollbar { width: 9px; height: 9px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgb(var(--line)); border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: rgb(var(--t3) / 0.5); }
+
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+/* Visible focus for keyboard users (accessibility) */
+:focus-visible { outline: 2px solid rgb(var(--brand)); outline-offset: 2px; border-radius: 6px; }
+
+.card {
+  background: rgb(var(--surface));
+  border: 1px solid rgb(var(--line));
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+}
+.card-hover { transition: border-color .15s, box-shadow .15s, transform .15s; }
+.card-hover:hover { border-color: rgb(var(--t3) / 0.4); box-shadow: var(--shadow-lg); }
+
+/* ---- Leaflet theming ---- */
+.leaflet-container { background: rgb(var(--surface-2)); font-family: var(--font-sans); }
+.leaflet-tile { filter: var(--map-filter); }
+.leaflet-control-attribution { background: rgb(var(--surface) / 0.8) !important; color: rgb(var(--t3)) !important; }
+.leaflet-control-attribution a { color: rgb(var(--t2)) !important; }
+.leaflet-bar a { background: rgb(var(--surface)) !important; color: rgb(var(--t1)) !important; border-color: rgb(var(--line)) !important; }
+.leaflet-bar a:hover { background: rgb(var(--surface-3)) !important; }
+.leaflet-popup-content-wrapper, .leaflet-popup-tip { background: rgb(var(--surface)); color: rgb(var(--t1)); box-shadow: var(--shadow-lg); }
+.leaflet-popup-content { margin: 12px 14px; font-size: 12px; }
+
+.rake-marker { display: grid; place-items: center; }
+.rake-dot {
+  width: 15px; height: 15px; border-radius: 50%; border: 2px solid rgb(var(--surface));
+  box-shadow: 0 0 0 2px rgb(var(--t1) / 0.12), 0 1px 6px rgb(0 0 0 / 0.35);
+}
+.rake-pulse::after {
+  content: ""; position: absolute; inset: -6px; border-radius: 50%;
+  border: 2px solid currentColor; opacity: 0.5; animation: pulse 1.8s ease-out infinite;
+}
+@keyframes pulse { 0% { transform: scale(0.6); opacity: 0.7; } 100% { transform: scale(1.8); opacity: 0; } }
+
+@keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+.animate-ticker { animation: ticker 44s linear infinite; }
+
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+.live-dot { animation: blink 1.4s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-ticker, .live-dot, .rake-pulse::after, .animate-ping { animation: none !important; }
+  * { transition-duration: 0.01ms !important; }
+}
