@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { buildMIS } from "@/lib/seed";
 import { Panel, Stat, Badge, Dot, PageHeader } from "@/components/ui";
+import { PatramReportBuilder } from "@/components/PatramReportBuilder";
 import { fmtTime, fmtInr, fmtHrs } from "@/lib/format";
 import { COMMODITY_META, COMMODITY_MAP_COLOR } from "@/lib/commodities";
 import type { Commodity, MISRow } from "@/lib/types";
@@ -109,9 +110,9 @@ export default function MISReports() {
           sub="net weight"
         />
         <Stat
-          label="Avg dwell"
+          label="Avg TAT (dwell)"
           value={fmtHrs(avgDwell)}
-          sub="all rakes"
+          sub="placement → release, all rakes"
         />
         <Stat
           label="Total demurrage incurred"
@@ -147,7 +148,7 @@ export default function MISReports() {
         </Panel>
 
         {/* Avg dwell by commodity */}
-        <Panel title="Avg dwell by commodity" sub="Hours">
+        <Panel title="Avg TAT by commodity" sub="Dwell hours, placement → release">
           <ResponsiveContainer width="100%" height={240}>
             <LineChart data={dwellByCommodity}>
               <CartesianGrid strokeDasharray="0" stroke="rgb(var(--line))" />
@@ -219,7 +220,7 @@ export default function MISReports() {
                 <th className="text-left px-4 py-2.5 text-xs font-semibold text-muted">Released</th>
                 <th className="text-right px-4 py-2.5 text-xs font-semibold text-muted">Wagons</th>
                 <th className="text-right px-4 py-2.5 text-xs font-semibold text-muted">Net (t)</th>
-                <th className="text-right px-4 py-2.5 text-xs font-semibold text-muted">Dwell</th>
+                <th className="text-right px-4 py-2.5 text-xs font-semibold text-muted" title="TAT — placement to release">Dwell (TAT)</th>
                 <th className="text-right px-4 py-2.5 text-xs font-semibold text-muted">Demurrage</th>
                 <th className="text-center px-4 py-2.5 text-xs font-semibold text-muted">Status</th>
               </tr>
@@ -287,9 +288,13 @@ export default function MISReports() {
         </div>
 
         <div className="mt-4 text-xs text-muted border-t border-panel-line pt-3">
-          Customised reports (RR-wise, siding-wise, commodity-wise, detention-wise) generated on demand and scheduled to email/SAP.
+          <span className="font-medium text-t2">TAT (Turnaround Time)</span> = hours from placement at the plant to release, shown here as "Dwell". Customised reports
+          (RR-wise, siding-wise, commodity-wise, detention-wise) generated on demand and scheduled to email/SAP.
         </div>
       </Panel>
+
+      {/* Patram AI — natural-language report builder */}
+      <PatramReportBuilder misData={misData} />
     </div>
   );
 }

@@ -5,7 +5,7 @@ import { Panel, Stat, Badge, PageHeader } from "@/components/ui";
 import { PlantMapCanvas } from "@/components/Maps";
 import { fmtTime, fmtDateTime } from "@/lib/format";
 import type { Alert, AlertSeverity } from "@/lib/types";
-import { ShieldAlert, Camera, Check } from "lucide-react";
+import { ShieldAlert, Check } from "lucide-react";
 
 export default function AlertsPage() {
   const { alerts, intrusions } = useStore();
@@ -164,11 +164,26 @@ export default function AlertsPage() {
                   <>
                     {sortedIntrusions.map((intrusion) => (
                       <div key={intrusion.id} className="p-4 space-y-3 hover:bg-panel/50 transition">
-                        {/* Camera snapshot placeholder */}
-                        <div className="relative aspect-video rounded-lg overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
-                          <Camera size={32} className="text-slate-300" />
+                        {/* Camera feed — demo loop standing in for the edge camera's RTSP stream */}
+                        <div className="relative aspect-video rounded-lg overflow-hidden bg-slate-900">
+                          <video
+                            className="h-full w-full object-cover grayscale contrast-125 opacity-80"
+                            src="https://videos.pexels.com/video-files/5171317/5171317-sd_960_540_30fps.mp4"
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                          />
+                          <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/10" />
+                          <div className="absolute left-2 top-2 flex items-center gap-1.5 rounded bg-slate-900/80 px-1.5 py-1 text-[10px] font-medium text-red-400">
+                            <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse" />
+                            REC
+                          </div>
                           <div className="absolute bottom-2 right-2 bg-slate-900/80 px-2 py-1 rounded text-xs text-slate-300 mono">
                             {intrusion.cameraId}
+                          </div>
+                          <div className="absolute bottom-2 left-2 bg-slate-900/80 px-2 py-1 rounded text-[10px] text-slate-300 mono">
+                            {fmtDateTime(intrusion.tsIso)}
                           </div>
                         </div>
 
@@ -208,7 +223,9 @@ export default function AlertsPage() {
                     ))}
                     <div className="px-4 py-3 bg-panel/40 border-t border-panel-line">
                       <p className="text-xs text-t3">
-                        Detection runs on edge GPU cameras with human-in-the-loop verification
+                        Detection runs on edge GPU cameras with human-in-the-loop verification.
+                        Feed shown is representative yard footage for this demo — production wires
+                        actual RTSP streams from the installed camera estate.
                       </p>
                     </div>
                   </>

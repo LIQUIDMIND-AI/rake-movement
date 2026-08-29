@@ -3,8 +3,9 @@ import { useStore } from "@/lib/store";
 import { Panel, Stat, LiveBadge, Badge } from "@/components/ui";
 import { PlantMapCanvas } from "@/components/Maps";
 import { RakeBoard } from "@/components/RakeBoard";
-import { fmtInr, fmtTime, countdown } from "@/lib/format";
+import { fmtInr, fmtTime, fmtHrs, countdown } from "@/lib/format";
 import { COMMODITY_META, COMMODITY_MAP_COLOR } from "@/lib/commodities";
+import { buildMIS } from "@/lib/seed";
 import type { Commodity } from "@/lib/types";
 import { ChevronRight, AlertTriangle } from "lucide-react";
 import Link from "next/link";
@@ -15,7 +16,13 @@ export default function ControlRoom() {
   const moving = inPlant.filter((r) => r.status === "moving").length;
   const breached = inPlant.filter((r) => countdown(nowMs, r.freeUntilIso).breached);
   const exposure = 124300;
-  const avgTat = inPlant.reduce((s, r) => s + r.detentionHrs, 0) / inPlant.length;
+  // Detention: hours a rake has been held so far (in-plant, still running).
+  const avgDetention = inPlant.reduce((s, r) => s + r.detentionHrs, 0) / inPlant.length;
+  // TAT (Turnaround Time): placement -> release, for rakes that completed a full cycle this shift.
+  const releasedThisShift = buildMIS().filter((r) => r.status === "Released");
+  const avgTat = releasedThisShift.length > 0
+    ? releasedThisShift.reduce((s, r) => s + r.dwellHrs, 0) / releasedThisShift.length
+    : 0;
   const openCrit = alerts.filter((a) => a.severity === "critical" && !a.ack);
   const topCrit = openCrit[0];
 
@@ -49,12 +56,18 @@ export default function ControlRoom() {
       )}
 
       {/* KPI strip */}
-      <section className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
+      <section className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
         <Stat label="Rakes in plant" value={String(inPlant.length)} sub={`${moving} moving now`} />
         <Stat label="Inbound to DSP" value={String(inbound.length)} sub={`+ ${vessels.filter((v) => v.status === "at-sea").length} vessels at sea`} />
         <Stat label="Past free time" value={String(breached.length)} sub="demurrage running" tone={breached.length ? "bad" : "good"} />
         <Stat label="Demurrage exposure" value={fmtInr(exposure)} sub="live, this shift" tone="bad" />
-        <Stat label="Avg detention" value={`${avgTat.toFixed(1)} h`} sub={`${openCrit.length} critical alerts`} tone={openCrit.length ? "bad" : "neutral"} />
+        <Stat label="Avg detention" value={fmtHrs(avgDetention)} sub="hrs held so far, in-plant" tone="neutral" />
+        <Stat
+          label="Avg TAT (Turnaround)"
+          value={releasedThisShift.length > 0 ? fmtHrs(avgTat) : "—"}
+          sub={`${releasedThisShift.length} rakes released, this shift`}
+          tone={avgTat > 6 ? "bad" : "neutral"}
+        />
       </section>
 
       {/* Primary — live map + rake board */}

@@ -85,6 +85,13 @@ export default function DemurrageConsole() {
         title="Free-time countdown"
         sub="All in-plant rakes sorted by urgency — IR free time expires per wagon per hour"
       >
+        {/* Column legend — what each figure means and how it's calculated */}
+        <div className="mb-3 grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-1.5 rounded-lg border border-panel-line bg-panel/40 px-3 py-2.5 text-[10.5px] text-muted">
+          <div><span className="font-medium text-t2">Free until</span> — IR-granted free-time deadline (arrival + 48–72h by commodity).</div>
+          <div><span className="font-medium text-t2">Countdown</span> — time to that deadline; past zero it flips to <span className="mono">+Xh over</span> and demurrage starts.</div>
+          <div><span className="font-medium text-t2">Detention</span> — hours held so far since arrival, live, whether breached or not.</div>
+          <div><span className="font-medium text-t2">Est. demurrage</span> — ₹150/wagon/hr, accrues only on the hours past "Free until".</div>
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full text-[11px]">
             <thead>
@@ -92,11 +99,11 @@ export default function DemurrageConsole() {
                 <th className="text-left py-2 px-3 font-semibold text-muted">Rake</th>
                 <th className="text-left py-2 px-3 font-semibold text-muted">Commodity</th>
                 <th className="text-left py-2 px-3 font-semibold text-muted">Location</th>
-                <th className="text-left py-2 px-3 font-semibold text-muted">Arrived</th>
-                <th className="text-left py-2 px-3 font-semibold text-muted">Free until</th>
-                <th className="text-left py-2 px-3 font-semibold text-muted">Countdown</th>
-                <th className="text-right py-2 px-3 font-semibold text-muted">Detention</th>
-                <th className="text-right py-2 px-3 font-semibold text-muted">Est. demurrage</th>
+                <th className="text-left py-2 px-3 font-semibold text-muted" title="Placement/arrival timestamp captured by RFID/GNSS/weighbridge">Arrived</th>
+                <th className="text-left py-2 px-3 font-semibold text-muted" title="Deadline before IR free time expires">Free until</th>
+                <th className="text-left py-2 px-3 font-semibold text-muted" title="Time remaining to the free-time deadline; negative once breached">Countdown</th>
+                <th className="text-right py-2 px-3 font-semibold text-muted" title="Hours held so far since arrival — running total, not tied to the free-time breach">Detention</th>
+                <th className="text-right py-2 px-3 font-semibold text-muted" title="₹150/wagon/hr, only once the free-time deadline has passed">Est. demurrage</th>
               </tr>
             </thead>
             <tbody>

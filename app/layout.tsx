@@ -6,6 +6,7 @@ import { ThemeProvider, themeInitScript } from "@/lib/theme";
 import { Sidebar } from "@/components/Sidebar";
 import { Topbar } from "@/components/Topbar";
 import { RakeDrawer } from "@/components/RakeDrawer";
+import { AskChatWidget } from "@/components/AskChatWidget";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono", display: "swap" });
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </div>
           </div>
           <RakeDrawer />
+          <AskChatWidget />
         </StoreProvider>
         </ThemeProvider>
       </body>

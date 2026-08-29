@@ -1,7 +1,7 @@
 "use client";
 import { PageHeader, Panel, Stat, Badge } from "@/components/ui";
 import { FlowTrack, type FlowNode } from "@/components/FlowTrack";
-import { Boxes, ShieldCheck, FileSearch, Calculator, Ship, Train, Factory, Check } from "lucide-react";
+import { Boxes, ShieldCheck, FileSearch, Calculator, Ship, Train, Factory, Check, AlertTriangle, Database } from "lucide-react";
 
 interface ProductCard {
   name: string;
@@ -72,6 +72,15 @@ const PRODUCTS: ProductCard[] = [
       "Tracks regulatory changes (Board Rates, FTA updates) automatically",
     ],
   },
+];
+
+const TRADEGUARD_FLOW: FlowNode[] = [
+  { icon: <Ship size={20} />, label: "Ocean Vessel", sublabel: "Coal at load port" },
+  { icon: <ShieldCheck size={20} />, label: "Customs Clearance", sublabel: "BL, invoice, COO vs manifest", badge: "TRADEGUARD CHECK 1", badgeTone: "teal" },
+  { icon: <Boxes size={20} />, label: "River Barge", sublabel: "Ocean → inland waterway" },
+  { icon: <Database size={20} />, label: "New RR in SAP", sublabel: "Consignment note generated" },
+  { icon: <ShieldCheck size={20} />, label: "SAP Compliance Recheck", sublabel: "Barge manifest vs RR", badge: "TRADEGUARD CHECK 2", badgeTone: "teal" },
+  { icon: <Train size={20} />, label: "Rail to DSP", sublabel: "Rake departs for interchange" },
 ];
 
 const PORTS = [
@@ -220,6 +229,55 @@ export default function EXIMIntelligence() {
               interchange — keeping the tipplers and furnace fed.
             </p>
           </div>
+        </div>
+      </Panel>
+
+      {/* TradeGuard — where it plugs into this specific flow */}
+      <Panel
+        title="TradeGuard AI — Two compliance gates before a rake ever departs"
+        sub="Document reconciliation at each hand-off, so paperwork errors never become port demurrage or misrouted rakes"
+        bodyClass="p-4 space-y-4"
+      >
+        <FlowTrack nodes={TRADEGUARD_FLOW} scopeFrom={1} />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+          <div className="rounded-lg border border-panel-line bg-panel p-3.5">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="grid h-6 w-6 place-items-center rounded-md bg-accent-teal/15 text-accent-teal text-[11px] font-bold">1</span>
+              <div className="text-[12.5px] font-semibold text-t1">Ocean port — before unloading begins</div>
+            </div>
+            <p className="text-[11.5px] leading-relaxed text-muted">
+              Before coal is transferred to river barges, TradeGuard cross-matches the commercial
+              invoice, bill of lading, certificate of origin and customs declaration — reconciling
+              40+ fields in under 5 seconds. It confirms the coal grade on the manifest matches the
+              producer&apos;s invoice before the ship is even worked, catching the mismatches that would
+              otherwise trigger a customs hold and put the vessel into <span className="text-accent-red font-medium">port demurrage</span> — often
+              the single costliest delay in the whole import chain.
+            </p>
+          </div>
+          <div className="rounded-lg border border-panel-line bg-panel p-3.5">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="grid h-6 w-6 place-items-center rounded-md bg-accent-teal/15 text-accent-teal text-[11px] font-bold">2</span>
+              <div className="text-[12.5px] font-semibold text-t1">River terminal — barge to rail</div>
+            </div>
+            <p className="text-[11.5px] leading-relaxed text-muted">
+              When cargo moves from barge to rake, a new Railway Receipt is issued inside SAP.
+              TradeGuard sits in that document flow via plug-and-play API and re-checks the barge
+              cargo manifest against the new consignment note — destination plant code, HSN
+              classification, quantity — before the RR is finalised. A mismatch halts document
+              issuance instead of shipping a misrouted or misdeclared rake toward DSP.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-start gap-2 rounded-lg border border-accent-amber/25 bg-accent-amber/[0.06] px-3.5 py-2.5">
+          <AlertTriangle size={14} className="text-accent-amber shrink-0 mt-0.5" />
+          <p className="text-[11px] text-t2 leading-relaxed">
+            Both checks run <span className="font-medium text-t1">before</span> DSP&apos;s own dwell/demurrage clock on the{" "}
+            <span className="font-medium text-t1">Dwell &amp; Demurrage console</span> even starts — the goal is that a rake
+            reaching the interchange gate has already cleared customs and SAP compliance, so its full
+            TAT is unloading time, not paperwork rework.
+          </p>
         </div>
       </Panel>
 

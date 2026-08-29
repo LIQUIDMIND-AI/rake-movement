@@ -158,15 +158,15 @@ export default function LifecycleTracker() {
                     <div className="mono text-t1 font-semibold">{selectedRake.loadedT}</div>
                   </div>
                   <div>
-                    <div className="text-muted mb-0.5">Detention</div>
+                    <div className="text-muted mb-0.5" title="Hours held so far since arrival — still running until the rake is released.">Detention (so far)</div>
                     <div className="mono text-t1 font-semibold">
                       {fmtHrs(selectedRake.detentionHrs)}
                     </div>
                   </div>
                   <div>
-                    <div className="text-muted mb-0.5">Turnaround</div>
+                    <div className="text-muted mb-0.5" title="TAT = full placement-to-handover cycle time. Only known once the rake completes its cycle.">TAT (Turnaround)</div>
                     <div className="mono text-t1 font-semibold">
-                      {selectedRake.turnaroundHrs ? fmtHrs(selectedRake.turnaroundHrs) : "—"}
+                      {selectedRake.turnaroundHrs ? fmtHrs(selectedRake.turnaroundHrs) : <span className="text-t3 font-normal">in progress</span>}
                     </div>
                   </div>
                   <div>

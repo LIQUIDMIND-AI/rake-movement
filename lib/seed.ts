@@ -3,6 +3,7 @@ import type {
   MISRow, NLExchange, Commodity, SensorSource, LifecycleStage, Vessel,
 } from "./types";
 import { PORTS, interpolate, route } from "./network";
+import { COMMODITY_META } from "./commodities";
 
 // ---------------------------------------------------------------------------
 // Deterministic seed data for the mockup. All timestamps are anchored to a
@@ -205,6 +206,88 @@ export function buildMIS(): MISRow[] {
     };
   });
 }
+
+// --- Patram AI — natural-language MIS report builder -------------------------
+// Interprets a free-text query against this shift's MIS rows via keyword
+// heuristics (standing in for the real NLP/LLM layer) and returns a filtered,
+// grouped report — same underlying data as the MIS table, sliced on demand.
+export interface PatramReport {
+  title: string;
+  summary: string;
+  rows: MISRow[];
+  totals: { rakes: number; wagons: number; netT: number; demurrageInr: number; avgDwellHrs: number };
+}
+
+const PATRAM_COMMODITY_KEYWORDS: [string, Commodity][] = [
+  ["imported coking coal", "imported-coking-coal"],
+  ["coking coal", "imported-coking-coal"],
+  ["domestic coal", "domestic-coal"],
+  ["iron ore", "iron-ore"],
+  ["limestone", "limestone-flux"],
+  ["flux", "limestone-flux"],
+  ["finished steel", "finished-steel"],
+  ["empt", "empties"],
+];
+
+export function generatePatramReport(query: string, rows: MISRow[]): PatramReport {
+  const q = query.toLowerCase();
+  let filtered = rows;
+  const titleParts: string[] = [];
+
+  for (const [kw, commodity] of PATRAM_COMMODITY_KEYWORDS) {
+    if (q.includes(kw)) {
+      filtered = filtered.filter((r) => r.commodity === commodity);
+      titleParts.push(COMMODITY_META[commodity].label);
+      break;
+    }
+  }
+
+  if (q.includes("released")) {
+    filtered = filtered.filter((r) => r.status === "Released");
+    titleParts.push("released");
+  } else if (q.includes("detained")) {
+    filtered = filtered.filter((r) => r.status === "Detained");
+    titleParts.push("detained");
+  }
+
+  const hrsMatch = q.match(/(\d+(?:\.\d+)?)\s*(?:h|hr|hrs|hour|hours)\b/);
+  if (hrsMatch && (q.includes("dwell") || q.includes("tat") || q.includes("turnaround"))) {
+    const threshold = parseFloat(hrsMatch[1]);
+    filtered = filtered.filter((r) => r.dwellHrs > threshold);
+    titleParts.push(`dwell over ${threshold}h`);
+  }
+
+  if (q.includes("demurrage")) {
+    filtered = [...filtered].sort((a, b) => b.demurrageInr - a.demurrageInr);
+    titleParts.push("by demurrage");
+  }
+
+  const title = titleParts.length > 0
+    ? titleParts.map((p, i) => (i === 0 ? p[0].toUpperCase() + p.slice(1) : p)).join(" · ") + " — rake report"
+    : "Custom rake report";
+
+  const totals = {
+    rakes: filtered.length,
+    wagons: filtered.reduce((s, r) => s + r.wagons, 0),
+    netT: filtered.reduce((s, r) => s + r.netT, 0),
+    demurrageInr: filtered.reduce((s, r) => s + r.demurrageInr, 0),
+    avgDwellHrs: filtered.length > 0 ? filtered.reduce((s, r) => s + r.dwellHrs, 0) / filtered.length : 0,
+  };
+
+  const summary = filtered.length === 0
+    ? `No rakes in this shift's MIS data match "${query}".`
+    : `${totals.rakes} rake${totals.rakes > 1 ? "s" : ""} matched · ${totals.wagons} wagons · ${totals.netT.toLocaleString("en-IN")} t net · avg dwell ${totals.avgDwellHrs.toFixed(1)}h` +
+      (totals.demurrageInr > 0 ? ` · ₹${totals.demurrageInr.toLocaleString("en-IN")} demurrage.` : ".");
+
+  return { title, summary, rows: filtered, totals };
+}
+
+export const PATRAM_SEED_PROMPTS = [
+  "Show released rakes this shift with dwell and demurrage",
+  "Which rakes crossed 5 hours dwell this shift?",
+  "Imported coking coal rakes, sorted by demurrage",
+  "Detained rakes this shift",
+];
 
 // --- NL query canned exchanges (Ask LiquidMind) -----------------------------
 export const NL_SUGGESTIONS = [
