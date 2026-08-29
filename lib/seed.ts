@@ -309,6 +309,48 @@ export const PATRAM_SEED_PROMPTS = [
   "Detained rakes this shift",
 ];
 
+// --- TradeGuard / TariffIQ / Patram — HSN drift case study --------------------
+// A real recurring customs dispute pattern for imported coal: the load-port
+// supplier invoice and the destination Bill of Entry classify the same cargo
+// under different HSN codes once customs lab-tests it (Parr Formula, dry
+// basis). See Reliance Infrastructure Ltd. v. Commissioner of Customs and the
+// CESTAT/Supreme Court line of rulings on coal classification.
+export interface HsnDriftCase {
+  vesselName: string;
+  commodity: string;
+  supplierHsn: string; supplierDesc: string; supplierBasis: string;
+  boeHsn: string; boeDesc: string; boeBasis: string;
+  correctHsn: string;    // TariffIQ's resolved classification — the one customs will enforce
+  dutyDeltaInr: number;  // TariffIQ's calculated BCD/IGST/Cess impact of the drift
+  rodtepNote: string;    // TariffIQ's RoDTEP/Drawback eligibility note
+  precedent: string;     // legal citation, one line
+  recommendedAction: string;
+}
+
+export function buildHsnDriftCase(): HsnDriftCase {
+  return {
+    vesselName: "MV Bengal Trader",
+    commodity: "PCI / Blend (Mozambique) — 71,000 t",
+    supplierHsn: "2701.19.20", supplierDesc: "Steam Coal", supplierBasis: "As-Received Basis (ARB), load-port certificate",
+    boeHsn: "2701.12.00", boeDesc: "Bituminous Coal", boeBasis: "Dry basis (Parr Formula), destination lab test — GCV > 5,833 kcal/kg",
+    correctHsn: "2701.12.00", dutyDeltaInr: 8420000,
+    rodtepNote: "RoDTEP not applicable to this import leg; Drawback eligibility unaffected by the reclassification.",
+    precedent: "Reliance Infrastructure Ltd. v. Commissioner of Customs — CESTAT/Supreme Court coal classification line",
+    recommendedAction: "File a Bill of Entry amendment under Section 149, Customs Act 1962, backed by the lab test report; post a provisional differential-duty bond to release cargo before the classification dispute is resolved.",
+  };
+}
+
+// TradeGuard registers CIMS pre-arrival well inside the 15–60 day window, so by
+// the time a vessel is hours from berth the lockout risk is already retired —
+// not a still-ticking countdown on a rake this dashboard is actively tracking.
+export const CIMS_WATCH_VESSEL = { name: "MV Bengal Trader", etaHrs: 8, registeredDaysAgo: 22, windowMinDays: 15, windowMaxDays: 60 };
+
+export const BIS_NOC_CHECKLIST: { label: string; status: "ok" | "flagged"; note: string }[] = [
+  { label: "SIMS 2.0 registration (Ministry of Steel)", status: "ok", note: "Filed 9 days pre-arrival — inside the 7-day minimum window" },
+  { label: "BIS Quality Control Order — NOC", status: "flagged", note: "Coal blend composition pending Quality Control Committee sign-off" },
+  { label: "AD Code / IEC — port-specific", status: "ok", note: "Active and linked for Haldia" },
+];
+
 // --- NL query canned exchanges (Ask LiquidMind) -----------------------------
 export const NL_SUGGESTIONS = [
   "Which coking coal rakes crossed 6 hours dwell this shift?",

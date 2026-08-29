@@ -1,6 +1,7 @@
 "use client";
 import { PageHeader, Panel, Stat, Badge } from "@/components/ui";
 import { FlowTrack, type FlowNode } from "@/components/FlowTrack";
+import { HsnDriftCheck } from "@/components/HsnDriftCheck";
 import { Boxes, ShieldCheck, FileSearch, Calculator, Ship, Train, Factory, Check, AlertTriangle, Database } from "lucide-react";
 
 interface ProductCard {
@@ -280,6 +281,9 @@ export default function EXIMIntelligence() {
           </p>
         </div>
       </Panel>
+
+      {/* HSN drift case study — TradeGuard, TariffIQ & Patram working one real scenario */}
+      <HsnDriftCheck />
 
       {/* Credentials footer */}
       <div className="border-t border-panel-line pt-4">
