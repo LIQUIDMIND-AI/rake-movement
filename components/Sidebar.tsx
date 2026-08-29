@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Map, Ship, Route, Timer, FileBarChart2,
-  ShieldAlert, MessageSquareText, Boxes, Train,
+  ShieldAlert, Boxes, Train,
 } from "lucide-react";
 
 const NAV = [
@@ -14,7 +14,6 @@ const NAV = [
   { href: "/demurrage", label: "Dwell & Demurrage", icon: Timer, group: "Operations" },
   { href: "/mis", label: "MIS Reports", icon: FileBarChart2, group: "Intelligence" },
   { href: "/alerts", label: "Alerts & Intrusion", icon: ShieldAlert, group: "Intelligence" },
-  { href: "/ask", label: "Ask LiquidMind", icon: MessageSquareText, group: "Intelligence" },
   { href: "/exim", label: "EXIM Intelligence", icon: Boxes, group: "Intelligence" },
 ];
 

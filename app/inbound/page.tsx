@@ -12,8 +12,8 @@ import { Ship, Anchor, Droplets, Flame, Zap, Train } from "lucide-react";
 
 const PORT_TO_FURNACE: FlowNode[] = [
   { icon: <Ship size={20} />, label: "Vessel · Sea Leg", sublabel: "AIS · Sagar Setu" },
-  { icon: <Anchor size={20} />, label: "Haldia / Paradip / Vizag", sublabel: "Discharge · PCS1x" },
-  { icon: <Train size={20} />, label: "IR Rail", sublabel: "FOIS · Howrah–Delhi" },
+  { icon: <Anchor size={20} />, label: "Haldia / Paradip / Vizag", sublabel: "Discharge · PCS1x", badge: "TRADEGUARD: CUSTOMS CHECK", badgeTone: "teal" },
+  { icon: <Train size={20} />, label: "IR Rail", sublabel: "FOIS · Howrah–Delhi", badge: "TRADEGUARD: SAP RR CHECK", badgeTone: "teal" },
   { icon: <Droplets size={20} />, label: "Interchange", sublabel: "DSP gate yard", badge: "DSP TRACKING BEGINS", badgeTone: "brand" },
   { icon: <Droplets size={20} />, label: "Tipplers", sublabel: "T-1 / T-2 unload" },
   { icon: <Flame size={20} />, label: "Coke Oven", sublabel: "Carbonization" },
@@ -183,10 +183,16 @@ export default function InboundPage() {
       {/* Port to Plant Flow Stepper */}
       <Panel title="Load port → blast furnace flow" sub="One continuous chain: sea leg + rail leg + in-plant movement">
         <FlowTrack nodes={PORT_TO_FURNACE} scopeFrom={3} />
+        <p className="mt-3 text-[11px] text-muted">
+          <span className="text-accent-teal font-semibold">TradeGuard AI</span> runs both compliance gates on this chain —
+          customs clearance at the discharge port, then a SAP-embedded recheck when the rail RR is issued — before a rake
+          is ever counted as "en-route" here. Full flow on{" "}
+          <a href="/exim" className="text-brand hover:underline">EXIM Intelligence</a>.
+        </p>
       </Panel>
 
       {/* Integrations */}
-      <Integrations sub="Sea leg (Sagar Setu / PCS1x / AIS) + rail leg (FOIS) + ERP (SAP / Zoho) — unified through ULIP, consent-based" />
+      <Integrations sub="Sea leg (Sagar Setu / PCS1x / AIS) + rail leg (FOIS) + compliance (TradeGuard) + ERP (SAP / Zoho) — unified through ULIP, consent-based" />
     </div>
   );
 }

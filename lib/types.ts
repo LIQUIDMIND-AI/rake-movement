@@ -50,6 +50,44 @@ export type LifecycleStage =
   | "formation"         // empties being formed into a rake
   | "handover";         // handed back to Indian Railways
 
+// Canonical stage order — single source of truth used to derive "is this
+// stage done yet" and "what's the next stage" everywhere (simulation tick,
+// lifecycle timeline), so live movement and the displayed lifecycle can
+// never disagree with each other.
+export const LIFECYCLE_STAGE_ORDER: LifecycleStage[] = [
+  "en-route", "interchange", "accepted", "placement",
+  "unloading", "loading", "formation", "handover",
+];
+
+// What a rake becomes next once it finishes its current leg of movement.
+// "placement" defaults toward unloading (raw material into the plant);
+// rakes already authored past that point (loading finished steel, or
+// empties in formation) take their own specific next hop instead.
+export const NEXT_LIFECYCLE_STAGE: Partial<Record<LifecycleStage, LifecycleStage>> = {
+  "en-route": "interchange",
+  "interchange": "accepted",
+  "accepted": "placement",
+  "placement": "unloading",
+  "unloading": "formation",
+  "loading": "handover",
+  "formation": "handover",
+};
+
+// Status badge a rake settles into once it arrives at a given stage. The
+// simulation freezes position once a leg completes, so an arrival status is
+// always a parked one ("idle") rather than "moving" — the badge should match
+// what's actually happening on the map.
+export const STAGE_ARRIVAL_STATUS: Record<LifecycleStage, RakeStatus> = {
+  "en-route": "moving",
+  "interchange": "idle",
+  "accepted": "idle",
+  "placement": "idle",
+  "unloading": "unloading",
+  "loading": "loading",
+  "formation": "idle",
+  "handover": "idle",
+};
+
 export type RakeStatus = "moving" | "halted" | "unloading" | "loading" | "idle" | "detained";
 
 export interface Wagon {

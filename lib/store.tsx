@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import type { Rake, Alert, IntrusionEvent, InboundRake, Vessel } from "./types";
+import { NEXT_LIFECYCLE_STAGE, STAGE_ARRIVAL_STATUS } from "./types";
 import { buildRakes, buildInbound, buildAlerts, buildIntrusions, buildVessels, SHIFT_NOW } from "./seed";
 import { PORTS, interpolate, route } from "./network";
 
@@ -20,7 +21,11 @@ interface StoreValue {
 
 const Ctx = createContext<StoreValue | null>(null);
 
-// Advance a rake one simulation step: move along its route, park at the end.
+// Advance a rake one simulation step: move along its route toward its
+// current stage's destination, then hand it off to the next stage in the
+// canonical lifecycle order on arrival — never a hardcoded jump straight to
+// "unloading", so the live stage always matches what the lifecycle timeline
+// (built from the same stage order) expects to see next.
 function advance(r: Rake): Rake {
   if (r.status !== "moving" || r.progress >= 1) return r;
   const pts = route(r.routeId).points;
@@ -31,8 +36,8 @@ function advance(r: Rake): Rake {
   let status: Rake["status"] = r.status;
   let stage: Rake["stage"] = r.stage;
   if (progress >= 1) {
-    status = r.commodity === "empties" ? "idle" : r.commodity === "finished-steel" ? "loading" : "unloading";
-    stage = r.commodity === "empties" ? "handover" : r.commodity === "finished-steel" ? "loading" : "unloading";
+    stage = NEXT_LIFECYCLE_STAGE[r.stage] ?? r.stage;
+    status = STAGE_ARRIVAL_STATUS[stage];
   }
   return { ...r, progress, position, status, stage, speedKmph: progress >= 1 ? 0 : r.speedKmph };
 }

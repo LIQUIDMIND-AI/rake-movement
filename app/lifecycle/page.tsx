@@ -4,19 +4,10 @@ import { useStore } from "@/lib/store";
 import { Panel, Badge, Dot, PageHeader } from "@/components/ui";
 import { fmtTime, fmtHrs } from "@/lib/format";
 import { COMMODITY_META, COMMODITY_MAP_COLOR } from "@/lib/commodities";
-import type { LifecycleStage } from "@/lib/types";
+import { LIFECYCLE_STAGE_ORDER, type LifecycleStage } from "@/lib/types";
 import { Route } from "lucide-react";
 
-const LIFECYCLE_STAGES: LifecycleStage[] = [
-  "en-route",
-  "interchange",
-  "accepted",
-  "placement",
-  "unloading",
-  "loading",
-  "formation",
-  "handover",
-];
+const LIFECYCLE_STAGES = LIFECYCLE_STAGE_ORDER;
 
 function StageLabel(stage: LifecycleStage): string {
   const labels: Record<LifecycleStage, string> = {
@@ -66,14 +57,14 @@ export default function LifecycleTracker() {
       {/* Lifecycle Funnel Strip */}
       <div className="card p-4 space-y-2">
         <div className="text-[11px] text-muted font-semibold uppercase tracking-wide">Lifecycle Stages</div>
-        <div className="flex gap-2 overflow-x-auto pb-2">
+        <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
           {LIFECYCLE_STAGES.map((stage) => {
             const count = stageCounts[stage];
             const hasRakes = count > 0;
             return (
               <div
                 key={stage}
-                className={`flex-shrink-0 px-3 py-2 rounded-lg border ${
+                className={`px-3 py-2.5 rounded-lg border text-center ${
                   hasRakes
                     ? "bg-surface-2 border-panel-line"
                     : "bg-app border-line"
@@ -82,13 +73,18 @@ export default function LifecycleTracker() {
                 <div className="text-[10.5px] font-medium text-t2">
                   {StageLabel(stage)}
                 </div>
-                <div className={`text-[13px] font-semibold mono ${hasRakes ? "text-brand" : "text-t3"}`}>
+                <div className={`text-[15px] font-semibold mono ${hasRakes ? "text-brand" : "text-t3"}`}>
                   {count}
                 </div>
               </div>
             );
           })}
         </div>
+        <p className="text-[11px] text-muted pt-1">
+          <span className="text-accent-teal font-semibold">TradeGuard AI</span> has already cleared customs and
+          rechecked SAP RR compliance before a rake reaches <span className="text-t2 font-medium">Interchange</span> —
+          see <a href="/exim" className="text-brand hover:underline">EXIM Intelligence</a>.
+        </p>
       </div>
 
       {/* Two-column layout: Rake list (left) + Timeline (right) */}
@@ -183,8 +179,11 @@ export default function LifecycleTracker() {
                   <div className="absolute left-5 top-5 bottom-5 w-0.5 bg-line z-0" />
 
                   {selectedRake.lifecycle.map((event, idx) => {
+                    // Derived live from the rake's current stage (not the seed's
+                    // pre-baked `done` flag) — the simulation advances stage over
+                    // time, so this is what keeps the timeline from going stale.
                     const isActive = event.stage === selectedRake.stage;
-                    const isDone = event.done;
+                    const isDone = LIFECYCLE_STAGE_ORDER.indexOf(event.stage) < LIFECYCLE_STAGE_ORDER.indexOf(selectedRake.stage);
                     const isPending = !isDone && !isActive;
 
                     const borderColor = isDone ? "border-accent-grn" : isActive ? "border-brand" : "border-line";

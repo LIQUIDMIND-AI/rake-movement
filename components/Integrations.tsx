@@ -1,6 +1,6 @@
 "use client";
 import { Panel, Badge } from "./ui";
-import { Ship, Anchor, Waypoints, Train, Database, Boxes, Radar, ScanLine } from "lucide-react";
+import { Ship, Anchor, Waypoints, Train, Database, Boxes, Radar, ScanLine, ShieldCheck } from "lucide-react";
 
 type Status = "live" | "onboarding" | "planned";
 
@@ -15,6 +15,8 @@ const INTEGRATIONS: {
     desc: "Live AIS vessel positions via Directorate General of Lighthouses & Lightships.", status: "live" },
   { name: "ULIP", layer: "Aggregator", icon: Boxes, tone: "good",
     desc: "Unified Logistics Interface Platform — 125+ GoI APIs (coal/steel sector). One consent-based feed for sea + rail.", status: "live" },
+  { name: "TradeGuard AI", layer: "Compliance", icon: ShieldCheck, tone: "good",
+    desc: "Customs clearance check at the ocean port, then a SAP-embedded recheck when the barge → rail RR is issued. See EXIM Intelligence for the full flow.", status: "live" },
   { name: "FOIS", layer: "Rail leg", icon: Train, tone: "good",
     desc: "Freight Operations Information System (Indian Railways) — inbound rake visibility pre-interchange.", status: "live" },
   { name: "SAP S/4HANA · OData V4", layer: "ERP", icon: Database, tone: "good",

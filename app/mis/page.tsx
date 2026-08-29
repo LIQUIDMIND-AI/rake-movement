@@ -14,6 +14,7 @@ import {
 
 export default function MISReports() {
   const [period, setPeriod] = useState<"shift" | "daily" | "monthly">("shift");
+  const [activeTab, setActiveTab] = useState<"mis" | "patram">("mis");
   const misData = buildMIS();
 
   // Calculate stat tiles
@@ -97,6 +98,30 @@ export default function MISReports() {
         }
       />
 
+      {/* Tabs */}
+      <div className="flex gap-2">
+        <button
+          onClick={() => setActiveTab("mis")}
+          className={`px-4 py-2 rounded-full text-sm font-medium transition ${
+            activeTab === "mis" ? "bg-brand text-white" : "bg-panel text-t2 hover:text-t1"
+          }`}
+        >
+          MIS Reports
+        </button>
+        <button
+          onClick={() => setActiveTab("patram")}
+          className={`px-4 py-2 rounded-full text-sm font-medium transition ${
+            activeTab === "patram" ? "bg-brand text-white" : "bg-panel text-t2 hover:text-t1"
+          }`}
+        >
+          Patram AI — NL Reports
+        </button>
+      </div>
+
+      {activeTab === "patram" && <PatramReportBuilder misData={misData} />}
+
+      {activeTab === "mis" && (
+        <>
       {/* Stat tiles row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <Stat
@@ -292,9 +317,8 @@ export default function MISReports() {
           (RR-wise, siding-wise, commodity-wise, detention-wise) generated on demand and scheduled to email/SAP.
         </div>
       </Panel>
-
-      {/* Patram AI — natural-language report builder */}
-      <PatramReportBuilder misData={misData} />
+        </>
+      )}
     </div>
   );
 }

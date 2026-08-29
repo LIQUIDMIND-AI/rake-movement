@@ -1,15 +1,10 @@
 "use client";
 import { useState } from "react";
-import { usePathname } from "next/navigation";
 import { ChatPanel } from "./ChatPanel";
 import { MessageSquareText, X } from "lucide-react";
 
 export function AskChatWidget() {
   const [open, setOpen] = useState(false);
-  const pathname = usePathname();
-
-  // The full /ask page already is this experience — don't stack the widget on top of it.
-  if (pathname === "/ask") return null;
 
   return (
     <>

@@ -13,8 +13,7 @@ interface Message {
 const WELCOME =
   "Welcome to Ask LiquidMind. Ask any question about live rake movements, dwell times, demurrage exposure, inbound ETAs, equipment utilisation, or alerts across the plant. Every answer is grounded in real-time sensor data — RFID at interchange points, GNSS on locos, weighbridges at tipplers, and customs/port tracking for inbound imports.";
 
-// Shared chat thread + input, used by both the full /ask page and the
-// floating bottom-right widget so the two surfaces never drift apart.
+// Shared chat thread + input, rendered inside the floating Ask LiquidMind widget.
 export function ChatPanel({ compact = false }: { compact?: boolean }) {
   const [messages, setMessages] = useState<Message[]>([{ role: "assistant", text: WELCOME }]);
   const [inputValue, setInputValue] = useState("");

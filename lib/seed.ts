@@ -3,7 +3,7 @@ import type {
   MISRow, NLExchange, Commodity, SensorSource, LifecycleStage, Vessel,
 } from "./types";
 import { PORTS, interpolate, route } from "./network";
-import { COMMODITY_META } from "./commodities";
+import { COMMODITY_META, COMMODITY_MAP_COLOR } from "./commodities";
 
 // ---------------------------------------------------------------------------
 // Deterministic seed data for the mockup. All timestamps are anchored to a
@@ -126,7 +126,7 @@ export function buildInbound(): InboundRake[] {
     return { id, commodity, origin: PORTS[port].label, originPos, pos, progress, etaIso: iso(etaMin), distanceKm: dist, status, source, vessel };
   };
   return [
-    mk("RK-2267", "imported-coking-coal", "haldia", 0.97, 15, 12, "Approaching interchange", "GNSS", "MV Cape Orion"),
+    mk("RK-2284", "imported-coking-coal", "haldia", 0.97, 15, 12, "Approaching interchange", "GNSS", "MV Cape Orion"),
     mk("RK-2273", "imported-coking-coal", "paradip", 0.55, 640, 420, "In transit — Kharagpur", "FOIS", "MV Pacific Dawn"),
     mk("RK-2279", "imported-coking-coal", "haldia", 0.28, 380, 190, "In transit — Kolkata bypass", "ULIP", "MV Cape Orion"),
     mk("RK-2281", "imported-coking-coal", "vizag", 0.12, 1180, 780, "In transit — Bhadrak", "FOIS", "MV Iron Symphony"),
@@ -195,6 +195,9 @@ export function buildMIS(): MISRow[] {
     ["E-4470655", "empties", "RK-2255", -320, 0, 58, 0, 5.9, "Formation"],
     ["E-4470882", "imported-coking-coal", "RK-2258", -262, 0, 58, 3480, 5.2, "Unloading"],
     ["E-4471190", "imported-coking-coal", "RK-2261", -186, 0, 59, 3540, 3.1, "Placement"],
+    ["E-4471544", "iron-ore", "RK-2264", -92, 0, 52, 3080, 1.5, "Placement"],
+    ["E-4471720", "imported-coking-coal", "RK-2267", -22, 0, 59, 3540, 0.4, "In plant"],
+    ["E-4471903", "limestone-flux", "RK-2270", -58, 0, 45, 2700, 0.9, "Placement"],
   ];
   const demurrageRate = 150; // ₹ per wagon per hour beyond free time (illustrative)
   return rows.map(([rr, c, rk, placed, released, wagons, net, dwell, status]) => {
@@ -216,6 +219,7 @@ export interface PatramReport {
   summary: string;
   rows: MISRow[];
   totals: { rakes: number; wagons: number; netT: number; demurrageInr: number; avgDwellHrs: number };
+  byCommodity: { commodity: Commodity; label: string; rakes: number; avgDwellHrs: number; demurrageInr: number; fill: string }[];
 }
 
 const PATRAM_COMMODITY_KEYWORDS: [string, Commodity][] = [
@@ -279,7 +283,23 @@ export function generatePatramReport(query: string, rows: MISRow[]): PatramRepor
     : `${totals.rakes} rake${totals.rakes > 1 ? "s" : ""} matched · ${totals.wagons} wagons · ${totals.netT.toLocaleString("en-IN")} t net · avg dwell ${totals.avgDwellHrs.toFixed(1)}h` +
       (totals.demurrageInr > 0 ? ` · ₹${totals.demurrageInr.toLocaleString("en-IN")} demurrage.` : ".");
 
-  return { title, summary, rows: filtered, totals };
+  const byCommodityMap = filtered.reduce<Record<string, { rakes: number; dwellSum: number; demurrageInr: number }>>((m, r) => {
+    if (!m[r.commodity]) m[r.commodity] = { rakes: 0, dwellSum: 0, demurrageInr: 0 };
+    m[r.commodity].rakes += 1;
+    m[r.commodity].dwellSum += r.dwellHrs;
+    m[r.commodity].demurrageInr += r.demurrageInr;
+    return m;
+  }, {});
+  const byCommodity = (Object.keys(byCommodityMap) as Commodity[]).map((c) => ({
+    commodity: c,
+    label: COMMODITY_META[c].short,
+    rakes: byCommodityMap[c].rakes,
+    avgDwellHrs: byCommodityMap[c].dwellSum / byCommodityMap[c].rakes,
+    demurrageInr: byCommodityMap[c].demurrageInr,
+    fill: COMMODITY_MAP_COLOR[c],
+  }));
+
+  return { title, summary, rows: filtered, totals, byCommodity };
 }
 
 export const PATRAM_SEED_PROMPTS = [
@@ -316,13 +336,13 @@ export const NL_ANSWERS: Record<string, NLExchange> = {
   },
   "Tippler T-1 utilisation today": {
     q: "Tippler T-1 utilisation today",
-    a: "Tippler T-1 has handled 4 rakes this shift (RK-2231, RK-2258 active, RK-2261 inbound) at 78% utilisation. Idle time 1h 46m, largely a placement gap at 12:40. T-2 is running lower at 61% with a starvation alert open.",
+    a: "Tippler T-1 has handled 4 rakes this shift (RK-2231, RK-2258 active, RK-2261 placing) at 78% utilisation. Idle time 1h 46m, largely a placement gap at 12:40. T-2 is running lower at 61% with a starvation alert open.",
     chips: ["78% utilisation", "4 rakes / shift", "1h46m idle"],
   },
   "How many inbound coking coal rakes and their ETAs?": {
     q: "How many inbound coking coal rakes and their ETAs?",
-    a: "4 imported coking-coal rakes are inbound on the IR network. RK-2267 (Haldia) arrives in ~15 min; RK-2279 (Haldia) ~06:20; RK-2273 (Paradip) ~01:00 (+1, slipped +40m); RK-2281 (Vizag) ~10:00 (+1). Combined ~9,400 t against blast-furnace coke demand.",
-    chips: ["4 inbound", "Next: RK-2267 in 15m", "~9,400 t en route"],
+    a: "4 imported coking-coal rakes are inbound on the IR network. RK-2284 (Haldia) arrives in ~15 min; RK-2279 (Haldia) ~06:20; RK-2273 (Paradip) ~01:00 (+1, slipped +40m); RK-2281 (Vizag) ~10:00 (+1). Combined ~9,400 t against blast-furnace coke demand.",
+    chips: ["4 inbound", "Next: RK-2284 in 15m", "~9,400 t en route"],
   },
   "Which coking coal vessels are due this week?": {
     q: "Which coking coal vessels are due this week?",
