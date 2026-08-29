@@ -25,15 +25,8 @@ export default function InboundPage() {
   const atSeaT = vessels.reduce((s, v) => s + v.cargoT, 0);
 
   // Calculate stats
-  const nextEta = inbound.length > 0
-    ? new Date(
-        Math.min(
-          ...inbound
-            .filter((r) => r.progress < 1)
-            .map((r) => new Date(r.etaIso).getTime())
-        )
-      ).toISOString()
-    : "";
+  const pendingEtas = inbound.filter((r) => r.progress < 1).map((r) => new Date(r.etaIso).getTime());
+  const nextEta = pendingEtas.length > 0 ? new Date(Math.min(...pendingEtas)).toISOString() : "";
   const avgDistance = inbound.length > 0 ? Math.round(inbound.reduce((sum, r) => sum + r.distanceKm, 0) / inbound.length) : 0;
 
   // Sort by ETA ascending

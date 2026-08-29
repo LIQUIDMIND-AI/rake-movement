@@ -80,3 +80,15 @@ scratchpad/
 .env*.local
 .eslintcache
 .prettier-ignore
+
+# local Claude Code settings (can contain secrets)
+.claude/settings.local.*
+
+# sensitive/large docs — not for the repo
+context/Draft E-terms and conditions.pdf
+context/Power of atorney format.docx
+context/SOP- ULIP Data Access V1.pdf
+context/ULIP Metadata.docx
+context/ULIP Use Cases Format.PPTX
+context/ULIP_LDB_Integration_Requirement v1.pdf
+context/ULIP_Updated Dataset.pdf

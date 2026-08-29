@@ -10,8 +10,9 @@ import { PORTS, interpolate, route } from "./network";
 // (lib/sim.ts) advances rake positions from these seeds.
 // ---------------------------------------------------------------------------
 
-// Anchor: 28 Aug 2026, 14:20 IST — current running shift (B-shift).
-export const SHIFT_NOW = new Date("2026-08-28T14:20:00+05:30");
+// Anchor: current running shift, computed from the real clock each load so
+// the demo always reflects "today" instead of a fixed date.
+export const SHIFT_NOW = new Date();
 
 function iso(offsetMin: number): string {
   return new Date(SHIFT_NOW.getTime() + offsetMin * 60000).toISOString();
