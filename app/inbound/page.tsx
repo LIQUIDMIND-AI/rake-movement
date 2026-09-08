@@ -4,6 +4,7 @@ import { useStore } from "@/lib/store";
 import { Panel, Stat, Badge, PageHeader } from "@/components/ui";
 import { InboundMapCanvas } from "@/components/Maps";
 import { Integrations } from "@/components/Integrations";
+import { UlipLookup } from "@/components/UlipLookup";
 import { FlowTrack, type FlowNode } from "@/components/FlowTrack";
 import { fmtDateTime } from "@/lib/format";
 import { COMMODITY_META, COMMODITY_MAP_COLOR } from "@/lib/commodities";
@@ -193,6 +194,9 @@ export default function InboundPage() {
 
       {/* Integrations */}
       <Integrations sub="Sea leg (Sagar Setu / PCS1x / AIS) + rail leg (FOIS) + compliance (TradeGuard) + ERP (SAP / Zoho) — unified through ULIP, consent-based" />
+
+      {/* Live ULIP call (routed via dev-bastion proxy) */}
+      <UlipLookup />
     </div>
   );
 }

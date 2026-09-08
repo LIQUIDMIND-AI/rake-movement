@@ -92,3 +92,14 @@ context/ULIP Metadata.docx
 context/ULIP Use Cases Format.PPTX
 context/ULIP_LDB_Integration_Requirement v1.pdf
 context/ULIP_Updated Dataset.pdf
+
+# ULIP internal handover doc — contains staging credentials + AWS account IDs
+ulip/*.docx
+
+# TLS material: NEVER commit private keys. The public proxy cert (certs/*.crt) is
+# intentionally committed so the app can pin it (it is not a secret).
+*.key
+*.pem
+*.p12
+*.pfx
+!certs/*.crt
