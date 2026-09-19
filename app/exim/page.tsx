@@ -1,8 +1,9 @@
 "use client";
+import { useState } from "react";
 import { PageHeader, Panel, Stat, Badge } from "@/components/ui";
 import { FlowTrack, type FlowNode } from "@/components/FlowTrack";
 import { HsnDriftCheck } from "@/components/HsnDriftCheck";
-import { Boxes, ShieldCheck, FileSearch, Calculator, Ship, Train, Factory, Check, AlertTriangle, Database } from "lucide-react";
+import { Boxes, ShieldCheck, FileSearch, Calculator, Ship, Train, Factory, Check, Database } from "lucide-react";
 
 interface ProductCard {
   name: string;
@@ -91,6 +92,9 @@ const PORTS = [
 ];
 
 export default function EXIMIntelligence() {
+  const [tab, setTab] = useState<"overview" | "tradeguard">("overview");
+  const tradeguard = PRODUCTS[0];
+
   return (
     <div className="p-5 space-y-4">
       <PageHeader
@@ -99,6 +103,28 @@ export default function EXIMIntelligence() {
         icon={<Boxes size={20} />}
       />
 
+      {/* Tabs */}
+      <div className="flex gap-2">
+        <button
+          onClick={() => setTab("overview")}
+          className={`px-4 py-2 rounded-full text-sm font-medium transition ${
+            tab === "overview" ? "bg-brand text-white" : "bg-panel text-t2 hover:text-t1"
+          }`}
+        >
+          EXIM Overview
+        </button>
+        <button
+          onClick={() => setTab("tradeguard")}
+          className={`px-4 py-2 rounded-full text-sm font-medium transition ${
+            tab === "tradeguard" ? "bg-brand text-white" : "bg-panel text-t2 hover:text-t1"
+          }`}
+        >
+          TradeGuard Intelligence
+        </button>
+      </div>
+
+      {tab === "overview" && (
+        <>
       {/* Supply chain flow visualization */}
       <Panel
         title="End-to-End Supply Chain"
@@ -158,6 +184,15 @@ export default function EXIMIntelligence() {
                   </div>
                 ))}
               </div>
+
+              {product.name === "TradeGuard AI" && (
+                <button
+                  onClick={() => setTab("tradeguard")}
+                  className="w-full text-center text-[11.5px] font-medium text-brand hover:underline pt-1"
+                >
+                  See it catch a real case →
+                </button>
+              )}
             </div>
           </div>
         ))}
@@ -232,58 +267,58 @@ export default function EXIMIntelligence() {
           </div>
         </div>
       </Panel>
+        </>
+      )}
 
-      {/* TradeGuard — where it plugs into this specific flow */}
-      <Panel
-        title="TradeGuard AI — Two compliance gates before a rake ever departs"
-        sub="Document reconciliation at each hand-off, so paperwork errors never become port demurrage or misrouted rakes"
-        bodyClass="p-4 space-y-4"
-      >
-        <FlowTrack nodes={TRADEGUARD_FLOW} scopeFrom={1} />
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
-          <div className="rounded-lg border border-panel-line bg-panel p-3.5">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="grid h-6 w-6 place-items-center rounded-md bg-accent-teal/15 text-accent-teal text-[11px] font-bold">1</span>
-              <div className="text-[12.5px] font-semibold text-t1">Ocean port — before unloading begins</div>
+      {tab === "tradeguard" && (
+        <>
+      {/* Context strip — quick framing, not a wall of text */}
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between rounded-lg border border-panel-line bg-panel px-4 py-3">
+        <p className="text-[12px] text-muted leading-relaxed max-w-xl">
+          <span className="text-t1 font-medium">TradeGuard AI</span> cross-validates trade documents at every
+          hand-off — catching mismatches before they become customs holds, port demurrage, or misrouted rakes.
+        </p>
+        <div className="flex gap-5 shrink-0">
+          {tradeguard.metrics.map((m) => (
+            <div key={m.label} className="text-center">
+              <div className="text-sm font-semibold text-accent">{m.value}</div>
+              <div className="text-[9.5px] text-muted whitespace-nowrap">{m.label}</div>
             </div>
-            <p className="text-[11.5px] leading-relaxed text-muted">
-              Before coal is transferred to river barges, TradeGuard cross-matches the commercial
-              invoice, bill of lading, certificate of origin and customs declaration — reconciling
-              40+ fields in under 5 seconds. It confirms the coal grade on the manifest matches the
-              producer&apos;s invoice before the ship is even worked, catching the mismatches that would
-              otherwise trigger a customs hold and put the vessel into <span className="text-accent-red font-medium">port demurrage</span> — often
-              the single costliest delay in the whole import chain.
-            </p>
-          </div>
-          <div className="rounded-lg border border-panel-line bg-panel p-3.5">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="grid h-6 w-6 place-items-center rounded-md bg-accent-teal/15 text-accent-teal text-[11px] font-bold">2</span>
-              <div className="text-[12.5px] font-semibold text-t1">River terminal — barge to rail</div>
-            </div>
-            <p className="text-[11.5px] leading-relaxed text-muted">
-              When cargo moves from barge to rake, a new Railway Receipt is issued inside SAP.
-              TradeGuard sits in that document flow via plug-and-play API and re-checks the barge
-              cargo manifest against the new consignment note — destination plant code, HSN
-              classification, quantity — before the RR is finalised. A mismatch halts document
-              issuance instead of shipping a misrouted or misdeclared rake toward DSP.
-            </p>
-          </div>
+          ))}
         </div>
+      </div>
 
-        <div className="flex items-start gap-2 rounded-lg border border-accent-amber/25 bg-accent-amber/[0.06] px-3.5 py-2.5">
-          <AlertTriangle size={14} className="text-accent-amber shrink-0 mt-0.5" />
-          <p className="text-[11px] text-t2 leading-relaxed">
-            Both checks run <span className="font-medium text-t1">before</span> DSP&apos;s own dwell/demurrage clock on the{" "}
-            <span className="font-medium text-t1">Dwell &amp; Demurrage console</span> even starts — the goal is that a rake
-            reaching the interchange gate has already cleared customs and SAP compliance, so its full
-            TAT is unloading time, not paperwork rework.
-          </p>
+      {/* Where the two checks run */}
+      <Panel title="Two compliance gates before a rake ever departs" sub="Document reconciliation at each hand-off" bodyClass="p-4 space-y-3">
+        <FlowTrack nodes={TRADEGUARD_FLOW} scopeFrom={1} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+          <div className="rounded-lg border border-panel-line bg-panel p-3">
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="grid h-5 w-5 shrink-0 place-items-center rounded-md bg-accent-teal/15 text-accent-teal text-[10px] font-bold">1</span>
+              <div className="text-[12px] font-semibold text-t1">Ocean port</div>
+            </div>
+            <p className="text-[11px] leading-relaxed text-muted">
+              Cross-matches invoice, bill of lading and customs declaration before unloading — catching
+              mismatches before they become <span className="text-accent-red font-medium">port demurrage</span>.
+            </p>
+          </div>
+          <div className="rounded-lg border border-panel-line bg-panel p-3">
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="grid h-5 w-5 shrink-0 place-items-center rounded-md bg-accent-teal/15 text-accent-teal text-[10px] font-bold">2</span>
+              <div className="text-[12px] font-semibold text-t1">Barge → rail (SAP)</div>
+            </div>
+            <p className="text-[11px] leading-relaxed text-muted">
+              Re-checks the barge manifest against the new Railway Receipt in SAP — a mismatch halts the RR
+              instead of shipping a misdeclared rake toward DSP.
+            </p>
+          </div>
         </div>
       </Panel>
 
       {/* HSN drift case study — TradeGuard, TariffIQ & Patram working one real scenario */}
       <HsnDriftCheck />
+        </>
+      )}
 
       {/* Credentials footer */}
       <div className="border-t border-panel-line pt-4">

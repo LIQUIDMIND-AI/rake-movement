@@ -103,3 +103,5 @@ ulip/*.docx
 *.p12
 *.pfx
 !certs/*.crt
+.vercel
+.env*

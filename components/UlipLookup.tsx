@@ -5,10 +5,19 @@ import { Boxes, Loader2 } from "lucide-react";
 
 type Status = { connected: boolean; baseUrl: string; error?: string };
 
+// ULIP rejects Bill-of-Entry dates older than ~6 months (ERROR0003). Default to
+// today (DDMMYYYY) so the demo shows a clean response instead of a stale-date error.
+function todayDDMMYYYY() {
+  const d = new Date();
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  return `${dd}${mm}${d.getFullYear()}`;
+}
+
 export function UlipLookup() {
   const [status, setStatus] = useState<Status | null>(null);
-  const [beNo, setBeNo] = useState("2002892");
-  const [beDt, setBeDt] = useState("16072011");
+  const [beNo, setBeNo] = useState("1234567");
+  const [beDt, setBeDt] = useState(todayDDMMYYYY);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<unknown>(null);
   const [error, setError] = useState<string | null>(null);

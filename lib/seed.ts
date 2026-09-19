@@ -345,12 +345,6 @@ export function buildHsnDriftCase(): HsnDriftCase {
 // not a still-ticking countdown on a rake this dashboard is actively tracking.
 export const CIMS_WATCH_VESSEL = { name: "MV Bengal Trader", etaHrs: 8, registeredDaysAgo: 22, windowMinDays: 15, windowMaxDays: 60 };
 
-export const BIS_NOC_CHECKLIST: { label: string; status: "ok" | "flagged"; note: string }[] = [
-  { label: "SIMS 2.0 registration (Ministry of Steel)", status: "ok", note: "Filed 9 days pre-arrival — inside the 7-day minimum window" },
-  { label: "BIS Quality Control Order — NOC", status: "flagged", note: "Coal blend composition pending Quality Control Committee sign-off" },
-  { label: "AD Code / IEC — port-specific", status: "ok", note: "Active and linked for Haldia" },
-];
-
 // --- NL query canned exchanges (Ask LiquidMind) -----------------------------
 export const NL_SUGGESTIONS = [
   "Which coking coal rakes crossed 6 hours dwell this shift?",

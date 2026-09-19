@@ -102,7 +102,10 @@ async function login(): Promise<string> {
 
 async function icegateCall(apiNumber: number, body: Record<string, string>) {
   const token = await login();
-  const res = await ulipFetch(`${BASE_URL}/ulip/v1.0.0/icegate/${apiNumber}`, {
+  // ULIP's path is case-sensitive and zero-padded: ICEGATE/02, not icegate/2.
+  // A lowercase / non-padded path is rejected by the gateway with HTTP 403 (empty body).
+  const api = `ICEGATE/${String(apiNumber).padStart(2, "0")}`;
+  const res = await ulipFetch(`${BASE_URL}/ulip/v1.0.0/${api}`, {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -121,7 +124,7 @@ async function icegateCall(apiNumber: number, body: Record<string, string>) {
     parsed = text;
   }
   if (!res.ok) {
-    const err = new Error(`ICEGATE/${apiNumber} failed (${res.status})`) as Error & { body?: unknown; status?: number };
+    const err = new Error(`${api} failed (${res.status})`) as Error & { body?: unknown; status?: number };
     err.body = parsed;
     err.status = res.status;
     throw err;
@@ -135,6 +138,11 @@ export function toUlipDate(iso: string): string {
   const dd = String(d.getDate()).padStart(2, "0");
   const mm = String(d.getMonth() + 1).padStart(2, "0");
   return `${dd}${mm}${d.getFullYear()}`;
+}
+
+// Generic ICEGATE caller for the test console (any implemented API + its fields).
+export function callIcegate(apiNumber: number, body: Record<string, string>) {
+  return icegateCall(apiNumber, body);
 }
 
 // ICEGATE/02 — Bill of Entry status.
